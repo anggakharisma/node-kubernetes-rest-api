@@ -1,5 +1,8 @@
 import fastify, { FastifyRequest } from "fastify";
 
+import { createTodo, getTodo, getTodos, updateTodo } from "./controllers/todos";
+import { PrismaClient } from "@prisma/client";
+
 const loggerConfig = {
 	development: {
 		transport: {
@@ -14,23 +17,37 @@ const loggerConfig = {
 	test: false,
 }
 
-const server = fastify({
+const prisma = new PrismaClient();
+const app = fastify({
 	logger: loggerConfig["development"]
 });
 
-server.get("/health", (req: FastifyRequest, reply) => {
-	req.log.warn("THIS IS WARNING");
-	return {
-		message: "Health OK",
-	}
-});
+async function main() {
+	app.get("/health", (req: FastifyRequest, reply) => {
+		return {
+			message: "Health OK",
+		}
+	});
 
+	app.get("/todos", getTodos);
+	app.get("/todos/:id", getTodo);
+	app.post("/todos/", createTodo);
+	app.put("/todos/:id", updateTodo);
 
-server.listen({ port: 8855 }, (err, address) => {
-	if (err) {
-		console.error(err);
-		process.exit(1);
-	}
+	app.listen({ host: "0.0.0.0", port: 8855 }, (err, address) => {
+		if (err) {
+			console.error(err);
+			process.exit(1);
+		}
 
-	console.log(`Server listening at ${address}`)
-});
+		console.log(`Server listening at ${address}`)
+	});
+}
+
+main().then(async () => {
+	await prisma.$disconnect()
+}).catch(async (e) => {
+	console.error(e);
+	await prisma.$disconnect();
+	process.exit(1);
+})
