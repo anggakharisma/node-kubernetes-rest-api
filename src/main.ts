@@ -33,6 +33,7 @@ async function main() {
 	app.get("/todos/:id", getTodo);
 	app.post("/todos/", createTodo);
 	app.put("/todos/:id", updateTodo);
+	app.delete("/todos/:id", () => { });
 
 	app.listen({ host: "0.0.0.0", port: 8855 }, (err, address) => {
 		if (err) {
