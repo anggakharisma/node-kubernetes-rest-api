@@ -28,9 +28,7 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app.kubernetes.io/name: nk-service
+    app: nk
   ports:
-      # By default and for convenience, the `targetPort` is setk to the same value as the `port` field.
     - port: 8855
-      targetPort: 8866
-      nodePort: 30007
+      targetPort: 8855
