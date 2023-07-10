@@ -13,14 +13,14 @@ export const getTodo = async (req: FastifyRequest<{
 	Params: {
 		id: number;
 	}
-}>, rep: FastifyReply) => {
+}>, reply: FastifyReply) => {
 	const todo = await prisma.todo.findFirst({
 		where: {
 			id: req.params.id
 		}
 	});
 
-	return todo;
+	reply.send(todo);
 }
 
 type TodoCreateRequest = FastifyRequest<{
