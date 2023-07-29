@@ -15,9 +15,11 @@ export const getTodo = async (req: FastifyRequest<{
 }>, reply: FastifyReply) => {
   const todo = await prisma.todo.findFirst({
     where: {
-      id: req.params.id
+      id: +req.params.id
     }
   });
+
+  if (todo === null) reply.send({ message: "Todo not found" }).status(404);
 
   reply.send(todo);
 }
@@ -49,7 +51,7 @@ export const updateTodo = async (req: FastifyRequest<{
 }>, reply: FastifyReply) => {
   const todo = await prisma.todo.findFirst({
     where: {
-      id: req.params.id
+      id: +req.params.id
     },
   });
 
@@ -67,4 +69,8 @@ export const updateTodo = async (req: FastifyRequest<{
   reply.send({
     message: "todo updated"
   });
+}
+
+export const deleteTodo = async(req: FastifyRequest, reply: FastifyReply) => {
+
 }
