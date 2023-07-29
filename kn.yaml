@@ -17,9 +17,59 @@ spec:
       containers:
       - name: nk
         image: node-kubernetes:latest
+        env:
+        - name: DATABASE_URL
+          value: postgresql://postgres:postgres@nk-postgres:5432/nk
         imagePullPolicy: Never
         ports:
         - containerPort: 8855
+---
+apiVersion: v1
+# Kind for volume chain
+kind: PersistentVolume
+metadata:
+  # Name the persistent chain
+  name: nk-postgres-volume
+  # Labels for identifying PV
+  labels:
+    type: local
+    app: postgresdb
+spec:
+  storageClassName: manual
+  capacity:
+    # PV Storage capacity
+    storage: 8Gi
+  # A db can write and read from volumes to multiple pods
+  accessModes:
+    - ReadWriteMany
+  # Specify the path to persistent the volumes  
+  hostPath:
+    path: "/data/nkdb"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nk-postgres
+  labels:
+    app: nk-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nk-postgres
+  template:
+    metadata:
+      labels:
+        app: nk-postgres
+    spec:
+      containers:
+      - name: nk-postgres
+        image: postgres
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "postgres"
+        ports:
+        - containerPort: 5432
 ---
 apiVersion: v1
 kind: Service
