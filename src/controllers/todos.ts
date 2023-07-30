@@ -3,16 +3,23 @@ import { FastifyReply, FastifyRequest } from "fastify";
 
 const prisma = new PrismaClient();
 
+type TodoCreateRequest = FastifyRequest<{
+  Body: {
+    name: string,
+  }
+}>
+
+interface TodoParams {
+  id: number
+}
+
+
 export const getTodos = async () => {
   const todos = await prisma.todo.findMany();
   return todos;
 }
 
-export const getTodo = async (req: FastifyRequest<{
-  Params: {
-    id: number;
-  }
-}>, reply: FastifyReply) => {
+export const getTodo = async (req: FastifyRequest<{ Params: TodoParams }>, reply: FastifyReply) => {
   const todo = await prisma.todo.findFirst({
     where: {
       id: +req.params.id
@@ -24,13 +31,10 @@ export const getTodo = async (req: FastifyRequest<{
   reply.send(todo);
 }
 
-type TodoCreateRequest = FastifyRequest<{
-  Body: {
-    name: string,
-  }
-}>
 
 export const createTodo = async (req: TodoCreateRequest, reply: FastifyReply) => {
+  if (!req.body) reply.send({ error: "Body shouldn't be empty" });
+
   try {
     await prisma.todo.create({
       data: {
@@ -45,9 +49,7 @@ export const createTodo = async (req: TodoCreateRequest, reply: FastifyReply) =>
 }
 
 export const updateTodo = async (req: FastifyRequest<{
-  Params: {
-    id: number;
-  },
+  Params: TodoParams,
   Body: {
     name: string;
     is_done?: boolean
@@ -76,5 +78,4 @@ export const updateTodo = async (req: FastifyRequest<{
 }
 
 export const deleteTodo = async (req: FastifyRequest, reply: FastifyReply) => {
-
 }
