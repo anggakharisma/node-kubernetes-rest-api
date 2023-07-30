@@ -26,18 +26,22 @@ export const getTodo = async (req: FastifyRequest<{
 
 type TodoCreateRequest = FastifyRequest<{
   Body: {
-    name: string
+    name: string,
   }
 }>
 
 export const createTodo = async (req: TodoCreateRequest, reply: FastifyReply) => {
-  await prisma.todo.create({
-    data: {
-      name: req.body.name,
-    }
-  });
+  try {
+    await prisma.todo.create({
+      data: {
+        name: req.body.name,
+      }
+    });
+    reply.send({ message: "todo created" });
+  } catch (e: any) {
+    reply.send({ error: e.message });
+  }
 
-  reply.send({ message: "todo created" });
 }
 
 export const updateTodo = async (req: FastifyRequest<{
@@ -71,6 +75,6 @@ export const updateTodo = async (req: FastifyRequest<{
   });
 }
 
-export const deleteTodo = async(req: FastifyRequest, reply: FastifyReply) => {
+export const deleteTodo = async (req: FastifyRequest, reply: FastifyReply) => {
 
 }
