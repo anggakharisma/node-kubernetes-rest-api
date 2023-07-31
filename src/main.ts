@@ -23,7 +23,7 @@ const app = fastify({
 });
 
 async function main() {
-  app.get("/health", (req: FastifyRequest, reply: FastifyReply) => {
+  app.get("/health", (_req: FastifyRequest, reply: FastifyReply) => {
     reply.send({
       message: "Health OK",
     });
