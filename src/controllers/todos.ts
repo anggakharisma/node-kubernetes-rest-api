@@ -76,5 +76,14 @@ export const updateTodo = async (req: FastifyRequest<{
   });
 }
 
-export const deleteTodo = async (req: FastifyRequest, reply: FastifyReply) => {
+export const deleteTodo = async (req: FastifyRequest<{ Params: TodoParams }>, reply: FastifyReply) => {
+  await prisma.todo.delete({
+    where: {
+      id: req.params.id
+    }
+  });
+
+  reply.send({
+    message: "Todo deleted"
+  });
 }
