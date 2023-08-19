@@ -1,6 +1,6 @@
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 
-import { createTodo, getTodo, getTodos, updateTodo } from "./controllers/todos";
+import { createTodo, deleteTodo, getTodo, getTodos, updateTodo } from "./controllers/todos";
 import { PrismaClient } from "@prisma/client";
 
 const loggerConfig = {
@@ -33,7 +33,7 @@ async function main() {
   app.get("/todos/:id", getTodo);
   app.post("/todos/", createTodo);
   app.put("/todos/:id", updateTodo);
-  app.delete("/todos/:id", () => { });
+  app.delete("/todos/:id", deleteTodo);
 
   app.listen({ host: "0.0.0.0", port: 8855 }, (err, address) => {
     if (err) {

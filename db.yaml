@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nk-postgres
+  labels:
+    app: nk-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nk-postgres
+  template:
+    metadata:
+      labels:
+        app: nk-postgres
+    spec:
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-vc
+      containers:
+      - name: nk-postgres
+        image: postgres:13
+        env:
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: POSTGRES_DB
+          value: nk
+        volumeMounts:
+        - mountPath: "/var/lib/postgresql/data"
+          name: postgres-data
+        ports:
+        - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nk-postgres
+spec:
+  type: ClusterIP
+  selector:
+    app: nk-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432

@@ -19,10 +19,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: postgres-vc
 spec:
+  storageClassName: local
   accessModes:
     - ReadWriteOnce
   volumeMode: Filesystem
   resources:
     requests:
       storage: 8Gi
-  storageClassName: local
