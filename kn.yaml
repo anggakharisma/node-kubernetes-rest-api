@@ -19,7 +19,7 @@ spec:
         image: node-kubernetes:latest
         env:
         - name: DATABASE_URL
-          value: postgresql://postgres:postgres@nk-postgres:5432/nk-postgres
+          value: postgresql://postgres:postgres@nk-postgres:5432/nk
         imagePullPolicy: Never
         ports:
         - containerPort: 8855
